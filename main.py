@@ -34,7 +34,7 @@ class OnlineSalesRegisterCollector:
 
     def check_amount(self):
         total = sum(self.__item_price[item] for item in self.__name_items)
-        if self.number_items > 10:
+        if self.__number_items > 10:
             total *= 0.1
         else:
             return total
@@ -42,8 +42,8 @@ class OnlineSalesRegisterCollector:
     def twenty_percent_tax_calculation(self):
         twenty_percent_tax = [item for item in self.__name_items if self.__tax_rate[item] == 20]
         total = [self.__item_price[item] for item in twenty_percent_tax]
-        tax_total = sum(price * 0.2 for price in total_prices)
-        if self.number_items > 10:
+        tax_total = sum(price * 0.2 for price in total)
+        if self.__number_items > 10:
             tax_total *= 0.9
         return tax_total
 
@@ -52,7 +52,7 @@ class OnlineSalesRegisterCollector:
         ten_percent_tax = [item for item in self.__name_items if self.__tax_rate[item] == 10]
         total = [self.__item_price[item] for item in ten_percent_tax]
         tax_total = sum(price * 0.1 for price in total)
-        if self.number_items > 10:
+        if self.__number_items > 10:
             tax_total *= 0.9
         return tax_total
 
@@ -62,10 +62,15 @@ class OnlineSalesRegisterCollector:
 
     @staticmethod
     def get_telephone_number(telephone_number):
-        try:
-            str_num = str(telephone_number)
-            if len(str_num) == 11:
-                raise ValueError ('Необходимо ввести 10 цифр после "+7"')
-            return f'+7{telephone_number}'
-        except TypeError:
-            raise TypeError ('Необходимо ввести цифры')
+        if isinstance(telephone_number, str):
+            if not telephone_number.isdigit():
+                raise ValueError('Необходимо ввести цифры')
+            telephone_number = int(telephone_number)
+        if not isinstance(telephone_number, int):
+            raise ValueError('Необходимо ввести цифры')
+        tel_str = str(telephone_number)
+        if len(tel_str) != 10:
+            raise ValueError('Необходимо ввести 10 цифр после "+7"')
+        return f'+7{tel_str}'
+
+print(OnlineSalesRegisterCollector.get_telephone_number('999999999'))
